@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "lvgl.h": "c",
+        "sdl.h": "c",
+        "lv_drv_conf.h": "c",
+        "pthread.h": "c",
+        "unix.h": "c",
+        "stdio.h": "c"
+    }
+}
