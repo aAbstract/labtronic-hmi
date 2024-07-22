@@ -1,9 +1,10 @@
-#ifndef UNIX_PLATFORM_H
-#define UNIX_PLATFORM_H
-
 #include "lv_drivers/sdl/sdl.h"
-#include "lv_drv_conf.h"
 #include <pthread.h>
+
+#define MONITOR_HOR_RES 1280
+#define MONITOR_VER_RES 800
+
+void sdl_display_flush(lv_disp_drv_t * disp_drv, const lv_area_t * area, lv_color_t * color_p);
 
 lv_disp_draw_buf_t disp_buf1;
 lv_color_t buf1_1[MONITOR_HOR_RES * 100];
@@ -36,5 +37,3 @@ lv_disp_t* unix_hal_init() {
   pthread_create(&thr_tick, NULL, tick_thread, NULL);
   return disp;
 }
-
-#endif

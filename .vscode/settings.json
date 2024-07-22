@@ -1,10 +1,11 @@
 {
     "files.associations": {
+        "common.h": "c",
         "lvgl.h": "c",
-        "sdl.h": "c",
-        "lv_drv_conf.h": "c",
-        "pthread.h": "c",
         "unix.h": "c",
-        "stdio.h": "c"
+        "linux_sdl.h": "c",
+        "linux_socket.h": "c",
+        "lt_ch000.h": "c",
+        "ltd_driver.h": "c"
     }
 }

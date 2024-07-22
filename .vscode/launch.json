@@ -8,7 +8,8 @@
             "name": "GDB",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/bin/main",
+            // "program": "${workspaceFolder}/build/bin/main",
+            "program": "${workspaceRoot}/soc",
             "cwd": "${workspaceFolder}",
             "miDebuggerPath": "/usr/bin/gdb",
             "args": []
