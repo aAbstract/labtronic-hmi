@@ -2,24 +2,28 @@
 
 #include "./lt_logo.h"
 
-#define MONITOR_HOR_RES 1280
-#define MONITOR_VER_RES 800
+#define LT_HMI_HOR_RES 1280
+#define LT_HMI_VER_RES 800
 
-#define TOP_BAR_CANVAS_WIDTH MONITOR_HOR_RES
+#define TOP_BAR_CANVAS_WIDTH LT_HMI_HOR_RES
 #define TOP_BAR_CANVAS_HEIGHT 60
+
+#define DEVICE_MODEL_IMG_WIDTH 800
+#define DEVICE_MODEL_IMG_HEIGHT 500
 
 #define CHX_DARK_BG_COLOR lv_color_hex(0x0B0E1F)
 #define CHX_ACCENT_COLOR lv_color_hex(0x29B2F8)
 #define CHX_FONT_COLOR lv_color_hex(0x8BA2CC)
 
-void add_lt_frame(const char* device_model) {
+static lv_color_t top_bar_canvas_buffer[((32 / 8) * TOP_BAR_CANVAS_WIDTH * TOP_BAR_CANVAS_HEIGHT)];
+
+void create_lt_frame(const char* device_model) {
   lv_obj_set_style_bg_color(lv_scr_act(), CHX_DARK_BG_COLOR, LV_PART_MAIN);
 
   // top bar
   lv_obj_t* top_bar_canvas = lv_canvas_create(lv_scr_act());
   lv_obj_set_x(top_bar_canvas, 0);
   lv_obj_set_y(top_bar_canvas, 0);
-  lv_color_t top_bar_canvas_buffer[((32 / 8) * TOP_BAR_CANVAS_WIDTH * TOP_BAR_CANVAS_HEIGHT)];
   lv_canvas_set_buffer(top_bar_canvas, top_bar_canvas_buffer, TOP_BAR_CANVAS_WIDTH, TOP_BAR_CANVAS_HEIGHT, LV_IMG_CF_TRUE_COLOR);
   lv_canvas_fill_bg(top_bar_canvas, CHX_DARK_BG_COLOR, LV_OPA_0);
   lv_obj_set_style_outline_width(top_bar_canvas, 4, LV_PART_MAIN);

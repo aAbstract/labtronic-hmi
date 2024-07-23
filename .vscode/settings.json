@@ -6,6 +6,12 @@
         "linux_sdl.h": "c",
         "linux_socket.h": "c",
         "lt_ch000.h": "c",
-        "ltd_driver.h": "c"
+        "ltd_driver.h": "c",
+        "mouse_cursor.h": "c",
+        "lt_ht113.h": "c",
+        "lt_ht113_brass_slab.h": "c",
+        "lt_ht113_brass_cylinder_d20.h": "c",
+        "lt_ht113_brass_cylinder_d30.h": "c",
+        "stdio.h": "c"
     }
 }

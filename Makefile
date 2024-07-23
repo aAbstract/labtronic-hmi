@@ -20,13 +20,13 @@ BUILD_DIR			:= $(WORKING_DIR)/obj
 BIN_DIR				:= $(WORKING_DIR)/bin
 UI_DIR 				:= ui
 
-WARNINGS 			:= -Wall -Wextra \
-						-Wshadow -Wundef -Wmaybe-uninitialized -Wmissing-prototypes -Wno-discarded-qualifiers \
-						-Wno-unused-function -Wno-error=strict-prototypes -Wpointer-arith -fno-strict-aliasing -Wno-error=cpp -Wuninitialized \
-						-Wno-unused-parameter -Wno-missing-field-initializers -Wno-format-nonliteral -Wno-cast-qual -Wunreachable-code -Wno-switch-default  \
-					  	-Wreturn-type -Wmultichar -Wformat-security -Wno-ignored-qualifiers -Wno-error=pedantic -Wno-sign-compare -Wno-error=missing-prototypes -Wdouble-promotion -Wclobbered -Wdeprecated  \
-						-Wempty-body -Wshift-negative-value -Wstack-usage=2048 \
-            			-Wtype-limits -Wsizeof-pointer-memaccess -Wpointer-arith
+# WARNINGS 			:= -Wall -Wextra \
+# 						-Wshadow -Wundef -Wmaybe-uninitialized -Wmissing-prototypes -Wno-discarded-qualifiers \
+# 						-Wno-unused-function -Wno-error=strict-prototypes -Wpointer-arith -fno-strict-aliasing -Wno-error=cpp -Wuninitialized \
+# 						-Wno-unused-parameter -Wno-missing-field-initializers -Wno-format-nonliteral -Wno-cast-qual -Wunreachable-code -Wno-switch-default  \
+# 					  	-Wreturn-type -Wmultichar -Wformat-security -Wno-ignored-qualifiers -Wno-error=pedantic -Wno-sign-compare -Wno-error=missing-prototypes -Wdouble-promotion -Wclobbered -Wdeprecated  \
+# 						-Wempty-body -Wshift-negative-value -Wstack-usage=2048 \
+#             			-Wtype-limits -Wsizeof-pointer-memaccess -Wpointer-arith
 
 CFLAGS 				:= -O0 -g $(WARNINGS)
 

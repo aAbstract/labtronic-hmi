@@ -170,6 +170,7 @@ uint8_t decode_packet(const uint8_t* packet, DeviceMsg* out_device_msg) {
   // construct device_msg object
   // load config
   out_device_msg->config = _config;
+  out_device_msg->config.cfg2 = packet[PKT_OFST_CFG2];
   // load seq_number
   uint16_t packet_seq_number = 0xFFFF;
   ((uint8_t*)&packet_seq_number)[0] = packet[PKT_OFST_SN];
