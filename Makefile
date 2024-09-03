@@ -48,7 +48,7 @@ BIN 				:= $(BIN_DIR)/main
 COMPILE				= $(CC) $(CFLAGS) $(INC) $(DEFINES)
 
 # Automatically include all source files
-SRCS 				:= $(shell find $(SRC_DIR) -type f -name '*.c' -not -path '*/\.*')
+SRCS 				:= $(shell find $(SRC_DIR) -type f -name '*.c' -not -path '*/\.*' -not -path './stm32/*' -not -path './scripts/*' -not -path './temp/*' -not -path './clz4/*' -not -path './clz7/*' -not -path './rle/*' -not -path './assets_out_bin/*' -not -path './assets_out_src/*')
 OBJECTS    			:= $(patsubst $(SRC_DIR)%,$(BUILD_DIR)/%,$(SRCS:.$(SRC_EXT)=.$(OBJ_EXT)))
 
 all: $(BIN)

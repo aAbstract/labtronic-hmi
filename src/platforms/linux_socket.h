@@ -17,12 +17,12 @@ void handle_sigint(int sig) {
   exit(0);
 }
 
-void handle_emu_spi_device_msg(uint8_t msg_type, uint8_t cfg2, uint8_t* msg_value_buffer);
+void handle_device_msg(uint8_t msg_type, uint8_t cfg2, uint8_t* msg_value_buffer);
 
 uint8_t handle_client_packet(const char* packet) {
   DeviceMsg device_msg;
   decode_packet(packet, &device_msg);
-  handle_emu_spi_device_msg(device_msg.config.msg_type, device_msg.config.cfg2, device_msg.msg_value_buffer);
+  handle_device_msg(device_msg.config.msg_type, device_msg.config.cfg2, device_msg.msg_value_buffer);
 }
 
 uint16_t port = 6543;

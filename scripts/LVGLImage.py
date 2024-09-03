@@ -1066,6 +1066,7 @@ class RLEImage(LVGLImage):
             f.write(compressed)
 
     def rle_compress(self, data: bytearray, blksize: int, threshold=16):
+        print(blksize)
         index = 0
         data_len = len(data)
         compressed_data = []

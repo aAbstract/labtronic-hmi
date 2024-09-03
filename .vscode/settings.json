@@ -12,6 +12,17 @@
         "lt_ht113_brass_slab.h": "c",
         "lt_ht113_brass_cylinder_d20.h": "c",
         "lt_ht113_brass_cylinder_d30.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "lt_logo_comp.h": "c",
+        "lt_logo.h": "c",
+        "array": "c",
+        "string": "c",
+        "string_view": "c",
+        "lv_mem.c": "cpp",
+        "test_data.h": "c",
+        "initializer_list": "cpp",
+        "utility": "cpp",
+        "lt_ht113_stainless_steel_cylinder_d20.h": "c",
+        "socket.h": "c"
     }
 }

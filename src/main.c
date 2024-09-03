@@ -1,7 +1,7 @@
 #include "lvgl/lvgl.h"
 #include <stdio.h>
 
-#include "lt_ht113/lt_ht113.h"
+#include "modules/lt_ht113/lt_ht113.h"
 #include "platforms/linux_sdl.h"
 #include "platforms/linux_socket.h"
 
