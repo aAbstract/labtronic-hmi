@@ -194,13 +194,13 @@ uint8_t cur_device_mode = 0x00;
 void handle_device_msg(uint8_t msg_type, uint8_t cfg2, uint8_t* msg_value_buffer) {
   // handle LT_HT113 msg_type
   if (msg_type == T_SAM_MSG_TYPE)
-    lv_label_set_text_fmt(t_sam_label, "%s    %s %d C", LV_SYMBOL_RIGHT, t_sam_label_str, (uint32_t)decode_float(msg_value_buffer));
+    lv_label_set_text_fmt(t_sam_label, "%s    %s %d C", LV_SYMBOL_RIGHT, t_sam_label_str, (int)decode_float(msg_value_buffer));
   else if (msg_type == T_AMB_MSG_TYPE)
-    lv_label_set_text_fmt(t_amb_label, "%s    %s %d C", LV_SYMBOL_RIGHT, t_amb_label_str, (uint32_t)decode_float(msg_value_buffer));
+    lv_label_set_text_fmt(t_amb_label, "%s    %s %d C", LV_SYMBOL_RIGHT, t_amb_label_str, (int)decode_float(msg_value_buffer));
   else if (msg_type == T_REF_MSG_TYPE)
-    lv_label_set_text_fmt(t_ref_label, "%s    %s %d C", LV_SYMBOL_RIGHT, t_ref_label_str, (uint32_t)decode_float(msg_value_buffer));
+    lv_label_set_text_fmt(t_ref_label, "%s    %s %d C", LV_SYMBOL_RIGHT, t_ref_label_str, (int)decode_float(msg_value_buffer));
   else if (msg_type == W_FLW_MSG_TYPE)
-    lv_label_set_text_fmt(w_flw_label, "Water Flow: %d L/m", (uint32_t)decode_float(msg_value_buffer));
+    lv_label_set_text_fmt(w_flw_label, "Water Flow: %d L/m", (int)decode_float(msg_value_buffer));
   else if (msg_type == X_WLS_MSG_TYPE)
     set_x_wls(msg_value_buffer[0]);
   else if (msg_type == DEVICE_ERROR_MSG_TYPE)

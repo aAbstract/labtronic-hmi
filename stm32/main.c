@@ -29,11 +29,11 @@
 // #include "quadspi.h"
 // #include "lvgl_port_touch.h"
 
-#include "labtronic_hmi/modules/lt_ht113/lt_ht113.h"
+#include "labtronic_hmi/platforms/stm32_usart.h"
+// #include "labtronic_hmi/modules/lt_ht113/lt_ht113.h"
 
 void SystemClock_Config(void);
 void PeriphCommonClock_Config(void);
-void MX_FREERTOS_Init(void);
 
 int main(void) {
   int32_t timeout;
@@ -82,6 +82,8 @@ int main(void) {
   MX_ADC3_Init();
   BSP_SDRAM_SingleTest();
 
+  init_stm32_usart();
+
   /* initialize qspi memory */
   // if (CSP_QUADSPI_Init() == HAL_OK)
   //   CSP_QSPI_EnableMemoryMappedMode();
@@ -90,18 +92,20 @@ int main(void) {
   lv_init();
   lvgl_display_init();
   // lvgl_touchscreen_init();
-  // TODO: STM32 SPI Init
 
   // load lvgl app
-  lt_ht113_main_screen_create();
+  lv_obj_t* test_label = lv_label_create(lv_scr_act());
+  lv_obj_center(test_label);
+  lv_label_set_text(test_label, "LabTronic HMI Software");
 
   if (HAL_TIM_PWM_Start(&htim15, TIM_CHANNEL_1) != HAL_OK)
     Error_Handler();
-  osKernelInitialize();
-  MX_FREERTOS_Init();
-  osKernelStart();
 
-  /* We should never get here as control is now taken by the scheduler */
+  while (1) {
+    lv_timer_handler();
+    lv_tick_inc(10);
+    HAL_Delay(10);
+  }
 }
 
 void SystemClock_Config(void) {
