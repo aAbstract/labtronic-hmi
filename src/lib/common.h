@@ -54,8 +54,8 @@ void create_lt_frame(const char* device_model) {
   lv_img_set_src(lt_logo_img, &lt_logo);
 }
 
-void style_neon_div(lv_color_t div_color, lv_obj_t* div_cont, lv_obj_t* div_label, uint16_t width) {
-  lv_obj_set_size(div_cont, width, LV_SIZE_CONTENT);
+void style_neon_div(lv_color_t div_color, lv_obj_t* div_cont, lv_obj_t* div_label, uint16_t width, uint16_t height) {
+  lv_obj_set_size(div_cont, width, height);
   lv_obj_set_style_bg_color(div_cont, div_color, LV_PART_MAIN);
   lv_obj_set_style_bg_opa(div_cont, LV_OPA_20, LV_PART_MAIN);
   lv_obj_set_style_radius(div_cont, 4, LV_PART_MAIN);

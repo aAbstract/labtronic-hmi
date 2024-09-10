@@ -17,6 +17,14 @@
 #define X_WLS_MSG_TYPE 4
 #define DEVICE_ERROR_MSG_TYPE 14
 
+#define CFG2_BRSS_SLAB 0xA0
+#define CFG2_STLS_SLAB 0xA1
+#define CFG2_BRSS_CD20 0xA2
+#define CFG2_STLS_CD20 0xA3
+#define CFG2_BRSS_CD30 0xA4
+#define CFG2_BRSS_SPHR 0xA5
+#define CFG2_STLS_SPHR 0xA6
+
 const static char* t_sam_label_str = "Sample Temprature:";
 const static char* t_amb_label_str = "Ambient Temprature:";
 const static char* t_ref_label_str = "Reference Temprature:";
@@ -25,7 +33,7 @@ const static char* brass_cylinder_d20 = "Brass Cylinder D=20mm";
 const static char* brass_cylinder_d30 = "Brass Cylinder D=30mm";
 const static char* brass_slab = "Brass Slab";
 const static char* brass_sphere = "Brass Sphere";
-const static char* stainless_steel_cylinder_d20 = "Stainless Steel D=20mm";
+const static char* stainless_steel_cylinder_d20 = "Stainless Steel Cylinder D=20mm";
 const static char* stainless_steel_slab = "Stainless Steel Slab";
 const static char* stainless_steel_sphere = "Stainless Steel Sphere";
 
@@ -66,12 +74,58 @@ void create_readings_panel() {
 
 lv_obj_t* lt_ht113_sample_cont;
 lv_obj_t* lt_ht113_sample_label;
+lv_obj_t* lt_ht113_sample_shape;
+void set_lt_ht113_sample(uint8_t cfg2) {
+  if (cfg2 == CFG2_BRSS_CD20) {
+    lv_obj_set_size(lt_ht113_sample_shape, 80, 20);
+    lv_obj_align_to(lt_ht113_sample_shape, NULL, LV_ALIGN_RIGHT_MID, -100, 0);
+    lv_obj_set_style_bg_color(lt_ht113_sample_shape, lv_color_hex(0xBA9D65), LV_PART_MAIN);
+    lv_obj_set_style_radius(lt_ht113_sample_shape, 4, LV_PART_MAIN);
+  } else if (cfg2 == CFG2_BRSS_CD30) {
+    lv_obj_set_size(lt_ht113_sample_shape, 80, 30);
+    lv_obj_align_to(lt_ht113_sample_shape, NULL, LV_ALIGN_RIGHT_MID, -100, 0);
+    lv_obj_set_style_bg_color(lt_ht113_sample_shape, lv_color_hex(0xBA9D65), LV_PART_MAIN);
+    lv_obj_set_style_radius(lt_ht113_sample_shape, 4, LV_PART_MAIN);
+  } else if (cfg2 == CFG2_BRSS_SLAB) {
+    lv_obj_set_size(lt_ht113_sample_shape, 40, 40);
+    lv_obj_align_to(lt_ht113_sample_shape, NULL, LV_ALIGN_RIGHT_MID, -100, 0);
+    lv_obj_set_style_bg_color(lt_ht113_sample_shape, lv_color_hex(0xBA9D65), LV_PART_MAIN);
+    lv_obj_set_style_radius(lt_ht113_sample_shape, 0, LV_PART_MAIN);
+  } else if (cfg2 == CFG2_BRSS_SPHR) {
+    lv_obj_set_size(lt_ht113_sample_shape, 40, 40);
+    lv_obj_align_to(lt_ht113_sample_shape, NULL, LV_ALIGN_RIGHT_MID, -100, 0);
+    lv_obj_set_style_bg_color(lt_ht113_sample_shape, lv_color_hex(0xBA9D65), LV_PART_MAIN);
+    lv_obj_set_style_radius(lt_ht113_sample_shape, 20, LV_PART_MAIN);
+  } else if (cfg2 == CFG2_STLS_CD20) {
+    lv_obj_set_size(lt_ht113_sample_shape, 80, 20);
+    lv_obj_align_to(lt_ht113_sample_shape, NULL, LV_ALIGN_RIGHT_MID, -100, 0);
+    lv_obj_set_style_bg_color(lt_ht113_sample_shape, lv_color_hex(0xD5D5D7), LV_PART_MAIN);
+    lv_obj_set_style_radius(lt_ht113_sample_shape, 4, LV_PART_MAIN);
+  } else if (cfg2 == CFG2_STLS_SLAB) {
+    lv_obj_set_size(lt_ht113_sample_shape, 40, 40);
+    lv_obj_align_to(lt_ht113_sample_shape, NULL, LV_ALIGN_RIGHT_MID, -100, 0);
+    lv_obj_set_style_bg_color(lt_ht113_sample_shape, lv_color_hex(0xD5D5D7), LV_PART_MAIN);
+    lv_obj_set_style_radius(lt_ht113_sample_shape, 0, LV_PART_MAIN);
+  } else if (cfg2 == CFG2_STLS_SPHR) {
+    lv_obj_set_size(lt_ht113_sample_shape, 40, 40);
+    lv_obj_align_to(lt_ht113_sample_shape, NULL, LV_ALIGN_RIGHT_MID, -100, 0);
+    lv_obj_set_style_bg_color(lt_ht113_sample_shape, lv_color_hex(0xD5D5D7), LV_PART_MAIN);
+    lv_obj_set_style_radius(lt_ht113_sample_shape, 20, LV_PART_MAIN);
+  }
+}
 void create_lt_ht113_sample() {
   lt_ht113_sample_cont = lv_obj_create(readings_panel);
   lt_ht113_sample_label = lv_label_create(lt_ht113_sample_cont);
-  style_neon_div(CHX_ACCENT_COLOR, lt_ht113_sample_cont, lt_ht113_sample_label, READINGS_PANEL_SIZE - 48);
+  style_neon_div(CHX_ACCENT_COLOR, lt_ht113_sample_cont, lt_ht113_sample_label, READINGS_PANEL_SIZE - 48, 100);
   lv_obj_align_to(lt_ht113_sample_cont, NULL, LV_ALIGN_TOP_LEFT, 0, 0);
-  lv_label_set_text_fmt(lt_ht113_sample_label, "%s    LT-HT113 Sample: %s", LV_SYMBOL_STOP, stainless_steel_cylinder_d20);
+  lv_obj_set_style_bg_opa(lt_ht113_sample_cont, LV_OPA_0, LV_PART_MAIN);
+  lv_obj_set_style_border_width(lt_ht113_sample_cont, 0, LV_PART_MAIN);
+  lv_label_set_text(lt_ht113_sample_label, "LT-HT113 Sample: --");
+
+  lt_ht113_sample_shape = lv_obj_create(lt_ht113_sample_cont);
+  lv_obj_set_style_pad_all(lt_ht113_sample_shape, 0, LV_PART_MAIN);
+  lv_obj_set_style_radius(lt_ht113_sample_shape, 0, LV_PART_MAIN);
+  lv_obj_set_style_border_width(lt_ht113_sample_shape, 0, LV_PART_MAIN);
 }
 
 lv_obj_t* t_sam_cont;
@@ -79,7 +133,7 @@ lv_obj_t* t_sam_label;
 void create_device_reading_t_sam() {
   t_sam_cont = lv_obj_create(readings_panel);
   t_sam_label = lv_label_create(t_sam_cont);
-  style_neon_div(lv_color_hex(0x9C27B0), t_sam_cont, t_sam_label, READINGS_PANEL_SIZE - 48);
+  style_neon_div(lv_color_hex(0x9C27B0), t_sam_cont, t_sam_label, READINGS_PANEL_SIZE - 48, LV_SIZE_CONTENT);
   lv_obj_set_style_bg_opa(t_sam_cont, LV_OPA_0, LV_PART_MAIN);
   lv_obj_align_to(t_sam_cont, NULL, LV_ALIGN_LEFT_MID, 0, 0);
   lv_label_set_text_fmt(t_sam_label, "%s    Sample Temprature: -- C", LV_SYMBOL_RIGHT);
@@ -90,7 +144,7 @@ lv_obj_t* t_amb_label;
 void create_device_reading_t_amb() {
   t_amb_cont = lv_obj_create(readings_panel);
   t_amb_label = lv_label_create(t_amb_cont);
-  style_neon_div(lv_color_hex(0x00BCD4), t_amb_cont, t_amb_label, READINGS_PANEL_SIZE - 48);
+  style_neon_div(lv_color_hex(0x00BCD4), t_amb_cont, t_amb_label, READINGS_PANEL_SIZE - 48, LV_SIZE_CONTENT);
   lv_obj_set_style_bg_opa(t_amb_cont, LV_OPA_0, LV_PART_MAIN);
   lv_obj_align_to(t_amb_cont, t_sam_cont, LV_ALIGN_OUT_TOP_LEFT, 0, -READINGS_PANEL_MARGIN);
   lv_label_set_text_fmt(t_amb_label, "%s    Ambient Temprature: -- C", LV_SYMBOL_RIGHT);
@@ -101,7 +155,7 @@ lv_obj_t* t_ref_label;
 void create_device_reading_t_ref() {
   t_ref_cont = lv_obj_create(readings_panel);
   t_ref_label = lv_label_create(t_ref_cont);
-  style_neon_div(lv_color_hex(0x009688), t_ref_cont, t_ref_label, READINGS_PANEL_SIZE - 48);
+  style_neon_div(lv_color_hex(0x009688), t_ref_cont, t_ref_label, READINGS_PANEL_SIZE - 48, LV_SIZE_CONTENT);
   lv_obj_set_style_bg_opa(t_ref_cont, LV_OPA_0, LV_PART_MAIN);
   lv_obj_align_to(t_ref_cont, t_sam_cont, LV_ALIGN_OUT_BOTTOM_LEFT, 0, READINGS_PANEL_MARGIN);
   lv_label_set_text_fmt(t_ref_label, "%s    Reference Temprature: -- C", LV_SYMBOL_RIGHT);
@@ -112,7 +166,7 @@ lv_obj_t* w_flw_label;
 void create_device_reading_w_flw() {
   w_flw_cont = lv_obj_create(readings_panel);
   w_flw_label = lv_label_create(w_flw_cont);
-  style_neon_div(lv_color_hex(0x2196F3), w_flw_cont, w_flw_label, 300);
+  style_neon_div(lv_color_hex(0x2196F3), w_flw_cont, w_flw_label, 300, LV_SIZE_CONTENT);
   lv_obj_center(w_flw_label);
   lv_obj_set_style_bg_opa(w_flw_cont, LV_OPA_0, LV_PART_MAIN);
   lv_obj_set_style_text_font(w_flw_label, &lv_font_montserrat_16, LV_PART_MAIN);
@@ -125,11 +179,12 @@ lv_obj_t* device_msg_label;
 void create_device_msg() {
   device_msg_cont = lv_obj_create(readings_panel);
   device_msg_label = lv_label_create(device_msg_cont);
-  style_neon_div(CHX_WARNING_COLOR, device_msg_cont, device_msg_label, READINGS_PANEL_SIZE - 48);
+  style_neon_div(CHX_WARNING_COLOR, device_msg_cont, device_msg_label, READINGS_PANEL_SIZE - 48, LV_SIZE_CONTENT);
   lv_obj_align_to(device_msg_cont, NULL, LV_ALIGN_BOTTOM_LEFT, 0, 0);
   lv_label_set_text_fmt(device_msg_label, "%s    %s", LV_SYMBOL_WARNING, "WATER LEVEL - INSUFFICIENT");
 }
 
+void handle_device_msg(uint8_t msg_type, uint8_t cfg2, uint8_t* msg_value_buffer);
 void lt_ht113_main_screen_create() {
   create_lt_frame("LT-HT113");
 
@@ -145,6 +200,10 @@ void lt_ht113_main_screen_create() {
   create_device_reading_w_flw();
 
   create_device_msg();
+
+  // inject initial device message
+  uint8_t init_dmsg_value_buffer[8] = {0};
+  handle_device_msg(0, CFG2_BRSS_SLAB, init_dmsg_value_buffer);
 }
 
 void set_x_wls(uint8_t wls_state) {
@@ -204,26 +263,29 @@ void handle_device_msg(uint8_t msg_type, uint8_t cfg2, uint8_t* msg_value_buffer
   else if (msg_type == X_WLS_MSG_TYPE)
     set_x_wls(msg_value_buffer[0]);
   else if (msg_type == DEVICE_ERROR_MSG_TYPE)
+    set_device_error(msg_value_buffer[0]);
+  else
     set_device_error(0xC0);
 
   if (cfg2 == cur_device_mode)
     return;
   cur_device_mode = cfg2;
 
-  if (cfg2 == 0xA0 || cfg2 == 0x00)
-    lv_label_set_text_fmt(lt_ht113_sample_label, "%s    LT-HT113 Sample: %s", LV_SYMBOL_STOP, brass_slab);
-  else if (cfg2 == 0xA1)
-    lv_label_set_text_fmt(lt_ht113_sample_label, "%s    LT-HT113 Sample: %s", LV_SYMBOL_STOP, stainless_steel_slab);
-  else if (cfg2 == 0xA2)
-    lv_label_set_text_fmt(lt_ht113_sample_label, "%s    LT-HT113 Sample: %s", LV_SYMBOL_STOP, brass_cylinder_d20);
-  else if (cfg2 == 0xA3)
-    lv_label_set_text_fmt(lt_ht113_sample_label, "%s    LT-HT113 Sample: %s", LV_SYMBOL_STOP, stainless_steel_cylinder_d20);
-  else if (cfg2 == 0xA4)
-    lv_label_set_text_fmt(lt_ht113_sample_label, "%s    LT-HT113 Sample: %s", LV_SYMBOL_STOP, brass_cylinder_d30);
-  else if (cfg2 == 0xA5)
-    lv_label_set_text_fmt(lt_ht113_sample_label, "%s    LT-HT113 Sample: %s", LV_SYMBOL_STOP, brass_sphere);
-  else if (cfg2 == 0xA6)
-    lv_label_set_text_fmt(lt_ht113_sample_label, "%s    LT-HT113 Sample: %s", LV_SYMBOL_STOP, stainless_steel_sphere);
+  if (cfg2 == CFG2_BRSS_SLAB || cfg2 == 0x00)
+    lv_label_set_text_fmt(lt_ht113_sample_label, "LT-HT113 Sample: %s", brass_slab);
+  else if (cfg2 == CFG2_STLS_SLAB)
+    lv_label_set_text_fmt(lt_ht113_sample_label, "LT-HT113 Sample: %s", stainless_steel_slab);
+  else if (cfg2 == CFG2_BRSS_CD20)
+    lv_label_set_text_fmt(lt_ht113_sample_label, "LT-HT113 Sample: %s", brass_cylinder_d20);
+  else if (cfg2 == CFG2_STLS_CD20)
+    lv_label_set_text_fmt(lt_ht113_sample_label, "LT-HT113 Sample: %s", stainless_steel_cylinder_d20);
+  else if (cfg2 == CFG2_BRSS_CD30)
+    lv_label_set_text_fmt(lt_ht113_sample_label, "LT-HT113 Sample: %s", brass_cylinder_d30);
+  else if (cfg2 == CFG2_BRSS_SPHR)
+    lv_label_set_text_fmt(lt_ht113_sample_label, "LT-HT113 Sample: %s", brass_sphere);
+  else if (cfg2 == CFG2_STLS_SPHR)
+    lv_label_set_text_fmt(lt_ht113_sample_label, "LT-HT113 Sample: %s", stainless_steel_sphere);
   else
     set_device_error(0xC1);
+  set_lt_ht113_sample(cfg2);
 }
