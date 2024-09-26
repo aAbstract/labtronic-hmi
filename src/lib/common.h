@@ -20,6 +20,8 @@
 #define DEVICE_MSG_WARNING 2
 #define DEVICE_MSG_ERROR 3
 
+#define LT_HMI_NAN -9999
+
 void create_lt_frame(const char* device_model) {
   lv_obj_set_style_bg_color(lv_scr_act(), CHX_DARK_BG_COLOR, LV_PART_MAIN);
 
@@ -61,8 +63,79 @@ void style_neon_div(lv_color_t div_color, lv_obj_t* div_cont, lv_obj_t* div_labe
   lv_obj_set_style_radius(div_cont, 4, LV_PART_MAIN);
   lv_obj_set_style_border_width(div_cont, 2, LV_PART_MAIN);
   lv_obj_set_style_border_color(div_cont, div_color, LV_PART_MAIN);
-  lv_obj_align_to(div_label, NULL, LV_ALIGN_LEFT_MID, 0, 0);
+  lv_obj_align(div_label, LV_ALIGN_LEFT_MID, 0, 0);
   lv_obj_set_style_text_font(div_label, &lv_font_montserrat_18, LV_PART_MAIN);
   lv_obj_set_style_text_color(div_label, div_color, LV_PART_MAIN);
   lv_label_set_text_fmt(div_label, "%s    Div Example Text", LV_SYMBOL_STOP);
+}
+
+lv_obj_t* device_title;
+void set_device_title(const char* device_title_str) {
+  device_title = lv_label_create(lv_scr_act());
+  lv_obj_align(device_title, LV_ALIGN_TOP_MID, 0, TOP_BAR_HEIGHT + 24);
+  lv_obj_set_style_text_color(device_title, CHX_ACCENT_COLOR, LV_PART_MAIN);
+  lv_obj_set_style_text_font(device_title, &lv_font_montserrat_30, LV_PART_MAIN);
+  lv_label_set_text(device_title, device_title_str);
+}
+
+typedef struct LVErrorToasts {
+  lv_obj_t* toasts_cont;
+  lv_obj_t* toasts_label;
+} LVErrorToasts;
+LVErrorToasts lv_error_toasts;
+const char* error_toasts_buffer[4] = {0x00};
+uint8_t error_toasts_buffer_write_ptr = 0;
+lv_timer_t* error_toasts_timer = NULL;
+
+void error_toasts_timer_handler(lv_timer_t* _timer) {
+  lv_obj_add_flag(lv_error_toasts.toasts_cont, LV_OBJ_FLAG_HIDDEN);
+  lv_obj_clear_flag(device_title, LV_OBJ_FLAG_HIDDEN);
+  uint8_t error_toasts_buffer_size = sizeof(error_toasts_buffer) / sizeof(error_toasts_buffer[0]);
+  for (uint8_t i = 0; i < error_toasts_buffer_size; i++)
+    error_toasts_buffer[i] = NULL;
+  error_toasts_buffer_write_ptr = 0;
+}
+
+void create_error_toasts(uint16_t width) {
+  lv_obj_t* toasts_cont = lv_obj_create(lv_scr_act());
+  lv_obj_set_size(toasts_cont, width, LV_SIZE_CONTENT);
+  lv_obj_set_pos(toasts_cont, 16, TOP_BAR_HEIGHT + 16);
+  lv_obj_set_style_bg_color(toasts_cont, CHX_ERROR_COLOR, LV_PART_MAIN);
+  lv_obj_set_style_bg_opa(toasts_cont, LV_OPA_20, LV_PART_MAIN);
+  lv_obj_set_style_radius(toasts_cont, 4, LV_PART_MAIN);
+  lv_obj_set_style_border_width(toasts_cont, 2, LV_PART_MAIN);
+  lv_obj_set_style_border_color(toasts_cont, CHX_ERROR_COLOR, LV_PART_MAIN);
+
+  lv_obj_t* toasts_label = lv_label_create(toasts_cont);
+  lv_obj_align(toasts_label, LV_ALIGN_LEFT_MID, 0, 0);
+  lv_obj_set_style_text_font(toasts_label, &lv_font_montserrat_18, LV_PART_MAIN);
+  lv_obj_set_style_text_color(toasts_label, CHX_ERROR_COLOR, LV_PART_MAIN);
+
+  lv_error_toasts.toasts_cont = toasts_cont;
+  lv_error_toasts.toasts_label = toasts_label;
+  lv_obj_add_flag(toasts_cont, LV_OBJ_FLAG_HIDDEN);
+
+  error_toasts_timer = lv_timer_create(error_toasts_timer_handler, 5000, NULL);
+}
+
+void add_error_toast(const char* msg) {
+  uint8_t error_toasts_buffer_size = sizeof(error_toasts_buffer) / sizeof(error_toasts_buffer[0]);
+  error_toasts_buffer[error_toasts_buffer_write_ptr] = msg;
+  error_toasts_buffer_write_ptr = (error_toasts_buffer_write_ptr + 1) % error_toasts_buffer_size;
+
+  char render_buffer[256];
+  uint8_t write_ptr = 0;
+  for (uint8_t i = 0; i < error_toasts_buffer_size; i++) {
+    if (error_toasts_buffer[i] == NULL)
+      continue;
+    sprintf(render_buffer + write_ptr, "%s    %s\n", LV_SYMBOL_CLOSE, error_toasts_buffer[i]);
+    write_ptr += 8 + strlen(error_toasts_buffer[i]);
+  }
+  render_buffer[write_ptr - 1] = 0x00; // remove last LF
+
+  lv_label_set_text(lv_error_toasts.toasts_label, render_buffer);
+  lv_obj_clear_flag(lv_error_toasts.toasts_cont, LV_OBJ_FLAG_HIDDEN);
+  lv_obj_add_flag(device_title, LV_OBJ_FLAG_HIDDEN);
+  if (error_toasts_timer != NULL)
+    lv_timer_reset(error_toasts_timer);
 }

@@ -23,6 +23,7 @@
         "initializer_list": "cpp",
         "utility": "cpp",
         "lt_ht113_stainless_steel_cylinder_d20.h": "c",
-        "socket.h": "c"
+        "socket.h": "c",
+        "old_ht113": "c"
     }
 }

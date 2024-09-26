@@ -3,54 +3,53 @@
 
 #include "../ltd_drivers/lt_ht113.h"
 
-#define PACKET_HEADER_SIZE 3
+#define SCREEN_UART &huart1
+#define RX_DMA_BUFFER_SIZE 256
 
 extern UART_HandleTypeDef huart1;
-uint8_t rx_buffer[32];
-uint8_t is_packet_receiving = 0;
+uint8_t rx_buffer[RX_DMA_BUFFER_SIZE];
+uint8_t rx_dma_buffer[RX_DMA_BUFFER_SIZE];
 
 void init_stm32_usart() {
   init_ltd_driver(LT_HT113_PROTOCOL_VERSION, lt_ht113_driver_config, LT_HT113_DRIVER_CONFIG_SIZE);
-  HAL_UART_Receive_IT(&huart1, rx_buffer, PACKET_HEADER_SIZE);
+  HAL_UARTEx_ReceiveToIdle_DMA(SCREEN_UART, rx_dma_buffer, RX_DMA_BUFFER_SIZE);
 }
 
 void handle_device_msg(uint8_t msg_type, uint8_t cfg2, uint8_t* msg_value_buffer);
-void _handle_packet() {
-  DeviceMsg device_msg;
-  decode_packet(rx_buffer, &device_msg);
-  handle_device_msg(device_msg.config.msg_type, device_msg.config.cfg2, device_msg.msg_value_buffer);
+void parse_rx_buffer_stream(uint8_t rx_buffer_size) {
+  uint8_t packet_buffer[32];
+  uint8_t write_ptr = 0;
+  for (uint8_t i = 0; i < rx_buffer_size; i++) {
+    packet_buffer[write_ptr] = rx_buffer[i];
+    if (packet_buffer[write_ptr] != 0x0A) {
+      write_ptr++;
+      continue;
+    }
+    if (packet_buffer[write_ptr - 1] != 0x0D) {
+      write_ptr++;
+      continue;
+    }
+    if (packet_buffer[0] != ((uint8_t*)&protocol_version)[0] || packet_buffer[1] != ((uint8_t*)&protocol_version)[1]) {
+      write_ptr = 0;
+      continue;
+    }
+    DeviceMsg device_msg;
+    if (decode_packet(packet_buffer, &device_msg) == RC_OK)
+      handle_device_msg(device_msg.config.msg_type, device_msg.config.cfg2, device_msg.msg_value_buffer);
+    write_ptr = 0;
+  }
 }
 
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef* huart) {
-  if (huart != &huart1)
+void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef* huart, uint16_t size) {
+  if (huart != SCREEN_UART)
     return;
 
-  // handle packet header case
-  uint8_t packet_body_size = rx_buffer[2] - PACKET_HEADER_SIZE;
-  if (
-      !is_packet_receiving &&
-      rx_buffer[0] == ((uint8_t*)&protocol_version)[0] &&
-      rx_buffer[1] == ((uint8_t*)&protocol_version)[1] &&
-      packet_body_size > 0) {
-    is_packet_receiving = 1;
-    HAL_UART_Receive_IT(&huart1, rx_buffer + PACKET_HEADER_SIZE, packet_body_size);
-    return;
-  }
-
-  // handle packet body case
-  if (is_packet_receiving) {
-    is_packet_receiving = 0;
-    HAL_UART_Receive_IT(&huart1, rx_buffer, PACKET_HEADER_SIZE);
-    _handle_packet();
-    return;
-  }
-
-  HAL_UART_Receive_IT(&huart1, rx_buffer, PACKET_HEADER_SIZE);
+  memcpy(rx_buffer, rx_dma_buffer, RX_DMA_BUFFER_SIZE);
+  parse_rx_buffer_stream(size);
+  HAL_UARTEx_ReceiveToIdle_DMA(SCREEN_UART, rx_dma_buffer, RX_DMA_BUFFER_SIZE);
 }
 
 void HAL_UART_ErrorCallback(UART_HandleTypeDef* huart) {
-  if (huart != &huart1)
-    return;
-
-  HAL_UART_Receive_IT(&huart1, rx_buffer, PACKET_HEADER_SIZE);
+  if (huart == SCREEN_UART)
+    HAL_UARTEx_ReceiveToIdle_DMA(SCREEN_UART, rx_dma_buffer, RX_DMA_BUFFER_SIZE);
 }
