@@ -1780,7 +1780,7 @@ static __attribute__((section(".ext_data_memory"))) uint8_t lt_ht113_stainless_s
 0x10,0x01,0x5B,0x46, 0x00,
 };
 
-static uint8_t lt_ht113_stainless_steel_cylinder_d20_buffer[56024];
+static __attribute__((section(".ext_ram_d2"))) uint8_t lt_ht113_stainless_steel_cylinder_d20_buffer[56024];
 
 const lv_img_dsc_t lt_ht113_stainless_steel_cylinder_d20 = {
   .header.cf = LV_IMG_CF_INDEXED_8BIT,

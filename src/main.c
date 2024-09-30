@@ -1,7 +1,7 @@
 #include "lvgl/lvgl.h"
 #include <stdio.h>
 
-#include "modules/lt_ht113/lt_ht113.h"
+#include "modules/lt_ht107/lt_ht107.h"
 #include "platforms/linux_sdl.h"
 #include "platforms/linux_socket.h"
 
@@ -11,7 +11,7 @@ int main() {
   if (linux_socket_init() != 0)
     return 1;
 
-  lt_ht113_main_screen_create();
+  lt_ht107_main_screen_create();
 
   while (1) {
     lv_timer_handler();

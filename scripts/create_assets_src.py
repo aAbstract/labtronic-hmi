@@ -14,7 +14,7 @@ from rle.rle_ffi import create_rle_ffi
 # autopep8: on
 
 ASSETS_BASE_DIR = 'assets'
-HMI_MODULE_NAME = 'lt_ht113'
+HMI_MODULE_NAME = 'lt_ht107'
 ASSETS_OUT_BIN_DIR = 'assets_out_bin'
 ASSETS_OUT_SRC_DIR = 'assets_out_src'
 

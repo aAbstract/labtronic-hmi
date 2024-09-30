@@ -6,7 +6,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-#include "../ltd_drivers/lt_ht113.h"
+#include "../ltd_drivers/lt_ht107.h"
 
 int server_socket_fd, client_socket_fd;
 void handle_sigint(int sig) {
@@ -39,6 +39,8 @@ uint8_t linux_socket_init() {
     printf("Error Creating TCP Socket\n");
     return 1;
   }
+  int sockopt = 1;
+  setsockopt(server_socket_fd, SOL_SOCKET, SO_REUSEADDR, &sockopt, sizeof(sockopt));
   int socket_bind_rc = bind(server_socket_fd, (struct sockaddr*)&server_addr, sizeof(server_addr));
   if (socket_bind_rc < 0) {
     printf("Error Binding TCP Socket\n");
@@ -50,7 +52,7 @@ uint8_t linux_socket_init() {
     return 1;
   }
   printf("Listening on Address 127.0.0.1:%d\n", port);
-  init_ltd_driver(LT_HT113_PROTOCOL_VERSION, lt_ht113_driver_config, LT_HT113_DRIVER_CONFIG_SIZE);
+  init_ltd_driver(LT_HT107_PROTOCOL_VERSION, lt_ht107_driver_config, LT_HT107_DRIVER_CONFIG_SIZE);
   return 0;
 }
 

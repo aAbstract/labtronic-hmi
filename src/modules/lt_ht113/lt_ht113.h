@@ -25,22 +25,22 @@
 #define CFG2_BRSS_SPHR 0xA5
 #define CFG2_STLS_SPHR 0xA6
 
-const static char* t_sam_label_str = "Sample Temprature:";
-const static char* t_amb_label_str = "Ambient Temprature:";
-const static char* t_ref_label_str = "Reference Temprature:";
+const char* t_sam_label_str = "Sample Temprature:";
+const char* t_amb_label_str = "Ambient Temprature:";
+const char* t_ref_label_str = "Reference Temprature:";
 
-const static char* brass_cylinder_d20 = "Brass Cylinder D=20mm";
-const static char* brass_cylinder_d30 = "Brass Cylinder D=30mm";
-const static char* brass_slab = "Brass Slab";
-const static char* brass_sphere = "Brass Sphere";
-const static char* stainless_steel_cylinder_d20 = "Stainless Steel Cylinder D=20mm";
-const static char* stainless_steel_slab = "Stainless Steel Slab";
-const static char* stainless_steel_sphere = "Stainless Steel Sphere";
+const char* brass_cylinder_d20 = "Brass Cylinder D=20mm";
+const char* brass_cylinder_d30 = "Brass Cylinder D=30mm";
+const char* brass_slab = "Brass Slab";
+const char* brass_sphere = "Brass Sphere";
+const char* stainless_steel_cylinder_d20 = "Stainless Steel Cylinder D=20mm";
+const char* stainless_steel_slab = "Stainless Steel Slab";
+const char* stainless_steel_sphere = "Stainless Steel Sphere";
 
-const static char* LT_HT113_ERR_TCS_OPT = "Temperature {T_sam} Over Temperature Protection";
-const static char* LT_HT113_ERR_TCA_OPT = "Temperature {T_amb} Over Temperature Protection";
-const static char* LT_HT113_ERR_TCR_OPT = "Temperature {T_ref} Over Temperature Protection";
-const static char* LT_HT113_ERR_PMP_DRE = "Pump Drive Error";
+const char* LT_HT113_ERR_TCS_OTP = "Temperature {T_sam} Over Temperature Protection";
+const char* LT_HT113_ERR_TCA_OTP = "Temperature {T_amb} Over Temperature Protection";
+const char* LT_HT113_ERR_TCR_OTP = "Temperature {T_ref} Over Temperature Protection";
+const char* LT_HT113_ERR_PMP_DRE = "Pump Drive Error";
 
 lv_obj_t* inner_window;
 void create_inner_window() {
@@ -217,7 +217,7 @@ void lt_ht113_main_screen_create() {
   create_lt_ht113_sample();
   create_wls_warning();
   create_error_toasts(600);
-  set_device_title("Unsteady Heat Transfer Apparatus");
+  set_device_title("Unsteady Heat Transfer Apparatus", 24);
   hmi_ready = 1;
   init_hmi_state();
 }
@@ -238,23 +238,15 @@ void set_x_wls(uint8_t wls_state) {
 
 void add_device_error(uint8_t device_error) {
   if (device_error == 0xF0)
-    add_error_toast(LT_HT113_ERR_TCS_OPT);
+    add_error_toast(LT_HT113_ERR_TCS_OTP);
   else if (device_error == 0xF1)
-    add_error_toast(LT_HT113_ERR_TCA_OPT);
+    add_error_toast(LT_HT113_ERR_TCA_OTP);
   else if (device_error == 0xF2)
-    add_error_toast(LT_HT113_ERR_TCR_OPT);
+    add_error_toast(LT_HT113_ERR_TCR_OTP);
   else if (device_error == 0xF3)
     add_error_toast(LT_HT113_ERR_PMP_DRE);
 }
 
-float decode_float(uint8_t* data_buffer) {
-  float decoded_value = 0;
-  ((uint8_t*)&decoded_value)[0] = data_buffer[0];
-  ((uint8_t*)&decoded_value)[1] = data_buffer[1];
-  ((uint8_t*)&decoded_value)[2] = data_buffer[2];
-  ((uint8_t*)&decoded_value)[3] = data_buffer[3];
-  return decoded_value;
-}
 uint8_t cur_device_mode = 0x00;
 void set_temp_value(lv_obj_t* temp_label, const char* temp_label_str, float temp_value) {
   if ((int)temp_value == LT_HMI_NAN) {

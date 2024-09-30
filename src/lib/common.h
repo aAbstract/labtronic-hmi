@@ -1,4 +1,5 @@
 #include "lvgl/lvgl.h"
+#include <stdio.h>
 
 #include "lt_logo.h"
 
@@ -70,9 +71,9 @@ void style_neon_div(lv_color_t div_color, lv_obj_t* div_cont, lv_obj_t* div_labe
 }
 
 lv_obj_t* device_title;
-void set_device_title(const char* device_title_str) {
+void set_device_title(const char* device_title_str, const uint16_t top_bar_offset) {
   device_title = lv_label_create(lv_scr_act());
-  lv_obj_align(device_title, LV_ALIGN_TOP_MID, 0, TOP_BAR_HEIGHT + 24);
+  lv_obj_align(device_title, LV_ALIGN_TOP_MID, 0, TOP_BAR_HEIGHT + top_bar_offset);
   lv_obj_set_style_text_color(device_title, CHX_ACCENT_COLOR, LV_PART_MAIN);
   lv_obj_set_style_text_font(device_title, &lv_font_montserrat_30, LV_PART_MAIN);
   lv_label_set_text(device_title, device_title_str);
@@ -138,4 +139,13 @@ void add_error_toast(const char* msg) {
   lv_obj_add_flag(device_title, LV_OBJ_FLAG_HIDDEN);
   if (error_toasts_timer != NULL)
     lv_timer_reset(error_toasts_timer);
+}
+
+float decode_float(uint8_t* data_buffer) {
+  float decoded_value = 0;
+  ((uint8_t*)&decoded_value)[0] = data_buffer[0];
+  ((uint8_t*)&decoded_value)[1] = data_buffer[1];
+  ((uint8_t*)&decoded_value)[2] = data_buffer[2];
+  ((uint8_t*)&decoded_value)[3] = data_buffer[3];
+  return decoded_value;
 }

@@ -189,6 +189,16 @@ SECTIONS
   {
     *(.ext_data_memory)
   } >FLASH_DATA
+  
+  .ext_ram_d2 :
+  {
+    *(.ext_ram_d2)
+  } >RAM_D2
+  
+  .ext_ram_d3 :
+  {
+    *(.ext_ram_d3)
+  } >RAM_D3
 
   .ARM.attributes 0 : { *(.ARM.attributes) }
 }

@@ -24,6 +24,7 @@
         "utility": "cpp",
         "lt_ht113_stainless_steel_cylinder_d20.h": "c",
         "socket.h": "c",
-        "old_ht113": "c"
+        "old_ht113": "c",
+        "lt_ht107.h": "c"
     }
 }

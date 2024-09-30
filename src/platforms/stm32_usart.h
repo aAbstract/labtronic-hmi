@@ -1,6 +1,7 @@
 #include "usart.h"
 #include <stdint.h>
 
+// #include "../ltd_drivers/lt_ht107.h"
 #include "../ltd_drivers/lt_ht113.h"
 
 #define SCREEN_UART &huart1
@@ -8,9 +9,10 @@
 
 extern UART_HandleTypeDef huart1;
 uint8_t rx_buffer[RX_DMA_BUFFER_SIZE];
-uint8_t rx_dma_buffer[RX_DMA_BUFFER_SIZE];
+__attribute__((section(".ext_ram_d3"))) uint8_t rx_dma_buffer[RX_DMA_BUFFER_SIZE];
 
 void init_stm32_usart() {
+  // init_ltd_driver(LT_HT107_PROTOCOL_VERSION, lt_ht107_driver_config, LT_HT107_DRIVER_CONFIG_SIZE);
   init_ltd_driver(LT_HT113_PROTOCOL_VERSION, lt_ht113_driver_config, LT_HT113_DRIVER_CONFIG_SIZE);
   HAL_UARTEx_ReceiveToIdle_DMA(SCREEN_UART, rx_dma_buffer, RX_DMA_BUFFER_SIZE);
 }
