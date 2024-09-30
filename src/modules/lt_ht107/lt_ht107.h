@@ -167,8 +167,15 @@ void create_temp_sequence() {
   lv_obj_align_to(temp_labels[8], temp_labels[7], LV_ALIGN_OUT_RIGHT_TOP, LT_HT107_TEMP_LABEL_SPACE, 0);
 }
 
-void toggle_temp_labels(uint8_t temp_vars_count) {
-  if (temp_vars_count == 6) {
+void toggle_temp_vars(uint8_t temp_vars_count) {
+  if (temp_vars_count == 0) {
+    for (uint8_t i = 0; i < sizeof(temp_labels) / sizeof(lv_obj_t*); i++)
+      lv_label_set_text_fmt(temp_labels[i], "T%d: NAN", i + 1);
+    lv_obj_set_style_text_opa(temp_labels[6], LV_OPA_100, LV_PART_MAIN);
+    lv_obj_set_style_text_opa(temp_labels[7], LV_OPA_100, LV_PART_MAIN);
+    lv_obj_set_style_text_opa(temp_labels[8], LV_OPA_100, LV_PART_MAIN);
+    adapt_position_heat_chart_axes(0, 20, 100);
+  } else if (temp_vars_count == 6) {
     lv_obj_set_style_text_opa(temp_labels[6], LV_OPA_0, LV_PART_MAIN);
     lv_obj_set_style_text_opa(temp_labels[7], LV_OPA_0, LV_PART_MAIN);
     lv_obj_set_style_text_opa(temp_labels[8], LV_OPA_0, LV_PART_MAIN);
@@ -187,7 +194,7 @@ void set_lt_ht107_mode(uint8_t cfg2) {
     lv_label_set_text(lt_ht107_sample_label, SAMPLE_DISCONNECTED_TEXT);
     lv_obj_set_style_border_width(device_img_linear, 0, LV_PART_MAIN);
     lv_obj_set_style_border_width(device_img_radial, 0, LV_PART_MAIN);
-    toggle_temp_labels(9);
+    toggle_temp_vars(0);
   } else if (cfg2 == CFG2_LINEAR_1) {
     lv_obj_set_size(lt_ht107_sample_shape, 80, 30);
     lv_obj_align_to(lt_ht107_sample_shape, lt_ht107_sample_label, LV_ALIGN_OUT_RIGHT_MID, 100, 0);
@@ -196,7 +203,7 @@ void set_lt_ht107_mode(uint8_t cfg2) {
     lv_obj_set_style_border_width(device_img_linear, ACTIVE_BORDER_W, LV_PART_MAIN);
     lv_obj_set_style_border_width(device_img_radial, 0, LV_PART_MAIN);
     lv_label_set_text(lt_ht107_sample_label, LINEAR_1_SAMPLE_TEXT);
-    toggle_temp_labels(9);
+    toggle_temp_vars(9);
   } else if (cfg2 == CFG2_LINEAR_2) {
     lv_obj_set_size(lt_ht107_sample_shape, 80, 30);
     lv_obj_align_to(lt_ht107_sample_shape, lt_ht107_sample_label, LV_ALIGN_OUT_RIGHT_MID, 100, 0);
@@ -205,7 +212,7 @@ void set_lt_ht107_mode(uint8_t cfg2) {
     lv_obj_set_style_border_width(device_img_linear, ACTIVE_BORDER_W, LV_PART_MAIN);
     lv_obj_set_style_border_width(device_img_radial, 0, LV_PART_MAIN);
     lv_label_set_text(lt_ht107_sample_label, LINEAR_2_SAMPLE_TEXT);
-    toggle_temp_labels(9);
+    toggle_temp_vars(9);
   } else if (cfg2 == CFG2_LINEAR_3) {
     lv_obj_set_size(lt_ht107_sample_shape, 80, 20);
     lv_obj_align_to(lt_ht107_sample_shape, lt_ht107_sample_label, LV_ALIGN_OUT_RIGHT_MID, 100, 0);
@@ -214,7 +221,7 @@ void set_lt_ht107_mode(uint8_t cfg2) {
     lv_obj_set_style_border_width(device_img_linear, ACTIVE_BORDER_W, LV_PART_MAIN);
     lv_obj_set_style_border_width(device_img_radial, 0, LV_PART_MAIN);
     lv_label_set_text(lt_ht107_sample_label, LINEAR_3_SAMPLE_TEXT);
-    toggle_temp_labels(9);
+    toggle_temp_vars(9);
   } else if (cfg2 == CFG2_RADIAL) {
     lv_obj_set_size(lt_ht107_sample_shape, 40, 40);
     lv_obj_align_to(lt_ht107_sample_shape, lt_ht107_sample_label, LV_ALIGN_OUT_RIGHT_MID, 100, 0);
@@ -223,13 +230,29 @@ void set_lt_ht107_mode(uint8_t cfg2) {
     lv_obj_set_style_border_width(device_img_linear, 0, LV_PART_MAIN);
     lv_obj_set_style_border_width(device_img_radial, ACTIVE_BORDER_W, LV_PART_MAIN);
     lv_label_set_text(lt_ht107_sample_label, RADIAL_X_SAMPLE_TEXT);
-    toggle_temp_labels(6);
+    toggle_temp_vars(6);
   }
 }
 
+lv_color_t _heater_color;
+void set_heater_power_color(float _heater_power) {
+  if (_heater_power > 0 && _heater_power <= 40)
+    _heater_color = lv_color_hex(0x64DD17);
+  else if (_heater_power > 45 && _heater_power <= 80)
+    _heater_color = lv_color_hex(0xFFAB00);
+  else if (_heater_power > 85 && _heater_power <= 120)
+    _heater_color = CHX_ERROR_COLOR;
+
+  lv_obj_set_style_border_color(heater_power_label_cont, _heater_color, LV_PART_MAIN);
+  lv_obj_set_style_text_color(heater_power_label, _heater_color, LV_PART_MAIN);
+  lv_chart_set_series_color(position_heat_chart, position_heat_chart_series, _heater_color);
+  lv_chart_refresh(position_heat_chart);
+}
+
 uint8_t hmi_ready = 0;
-uint8_t cur_device_mode = CFG2_RADIAL;
+uint8_t cur_device_mode = CFG2_SAMPLE_DISCONNECTED;
 void lt_ht107_main_screen_create() {
+  _heater_color = CHX_FONT_COLOR;
   create_lt_frame("LT-HT107");
   set_device_title("Linear and Radial Heat Conduction", 16);
   create_images_section();
@@ -240,21 +263,6 @@ void lt_ht107_main_screen_create() {
   create_error_toasts(600);
   hmi_ready = 1;
   set_lt_ht107_mode(cur_device_mode);
-}
-
-void set_heater_power_color(float _heater_power) {
-  lv_color_t _heater_color;
-  if (_heater_power > 0 && _heater_power <= 40)
-    _heater_color = lv_color_hex(0x64DD17);
-  else if (_heater_power > 40 && _heater_power <= 80)
-    _heater_color = lv_color_hex(0xFFAB00);
-  else if (_heater_power > 80 && _heater_power <= 120)
-    _heater_color = CHX_ERROR_COLOR;
-
-  lv_obj_set_style_border_color(heater_power_label_cont, _heater_color, LV_PART_MAIN);
-  lv_obj_set_style_text_color(heater_power_label, _heater_color, LV_PART_MAIN);
-  lv_chart_set_series_color(position_heat_chart, position_heat_chart_series, _heater_color);
-  lv_chart_refresh(position_heat_chart);
 }
 
 void add_device_error(uint8_t device_error) {
